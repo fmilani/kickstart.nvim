@@ -98,6 +98,11 @@ vim.g.have_nerd_font = false
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
 
+--  custom options
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+
 -- Make line numbers default
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
@@ -176,10 +181,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -236,14 +241,6 @@ require('lazy').setup({
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
-  --
-  -- Use `opts = {}` to force a plugin to be loaded.
-  --
-  --  This is equivalent to:
-  --    require('Comment').setup({})
-
-  -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim', opts = {} },
 
   -- Here is a more advanced example where we pass configuration
   -- options to `gitsigns.nvim`. This is equivalent to the following Lua:
@@ -585,6 +582,7 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'prettierd',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -636,6 +634,10 @@ require('lazy').setup({
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
         -- javascript = { { "prettierd", "prettier" } },
+        javascript = { 'prettierd' },
+        typescript = { 'prettierd' },
+        javascriptreact = { 'prettierd' },
+        typescriptreact = { 'prettierd' },
       },
     },
   },
@@ -806,10 +808,16 @@ require('lazy').setup({
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     build = ':TSUpdate',
+    dependencies = {
+      'windwp/nvim-ts-autotag',
+    },
     opts = {
-      ensure_installed = { 'bash', 'c', 'html', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
+      ensure_installed = { 'bash', 'c', 'html', 'json', 'javascript', 'typescript', 'tsx', 'css', 'dockerfile', 'lua', 'luadoc', 'markdown', 'vim', 'vimdoc' },
       -- Autoinstall languages that are not installed
       auto_install = true,
+      autotag = {
+        enable = true,
+      },
       highlight = {
         enable = true,
         -- Some languages depend on vim's regex highlighting system (such as Ruby) for indent rules.
@@ -844,7 +852,7 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
+  require 'kickstart.plugins.indent_line',
   -- require 'kickstart.plugins.lint',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
